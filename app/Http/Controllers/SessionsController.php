@@ -35,5 +35,4 @@ class SessionsController extends Controller
         return;
     }
 
-
 }
