@@ -21,6 +21,7 @@ class UserPolicy
 
     public function updata(User $currentUser, User $user)
     {
-        return $currentUser->id === $user->id;
+        // dd($user);
+        return $currentUser->id == $user->id;
     }
 }

@@ -13,7 +13,7 @@ class UsersController extends Controller
     {
         // 除了此处指定的动作('show','create','store')以外，所有其他动作都必须登录用户才能访问
         $this->middleware('auth',[
-            'except'=>['show','create','store']
+            'except' => ['show','create','store','index']
         ]);
 
         $this->middleware('guest',[
@@ -50,9 +50,15 @@ class UsersController extends Controller
         return redirect()->route('users.show',[$user]);
     }
 
+    public function index(){
+        // $users = User::all();
+        $users = User::paginate(6);
+        return view('users.index',compact('users'));
+    }
+
     public function edit(User $user)
     {
-        $this->authorize('update',$user);
+        $this->authorize('update', $user);
         return view('users.edit', compact('user'));
     }
 
@@ -67,7 +73,7 @@ class UsersController extends Controller
         $data = [];
         $data['name'] = $request->name;
         if ($request->password){
-            $data['password'] = $request->password;
+            $data['password'] = bcrypt($request->password);
         }
         $user->update($data);
         session()->flash('success','个人资料更新成功！');
@@ -77,6 +83,6 @@ class UsersController extends Controller
         //     'password' => bcrypt($request->password),
         // ]);
 
-        return redirect()->route('users.show', $user->id);
+        return redirect()->route('users.show', $user);
     }
 }
