@@ -34,8 +34,8 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'=>'required|unique:users|max:50',
-            'email'=>'required|email|unique:users|max:255',
+            'name'=>'required|unique:users,name|max:50',
+            'email'=>'required|email|unique:users,email|max:255',
             'password'=>'required|confirmed|min:6'
         ]);
 
@@ -84,5 +84,16 @@ class UsersController extends Controller
         // ]);
 
         return redirect()->route('users.show', $user);
+    }
+
+    public function destroy(User $user)
+    {
+        // 对删除操作进行授权验证
+        $this->authorize('destroy',$user);
+        
+        // 可以的话则进行删除操作
+        $user->delete();
+        session()->flash('success','成功删除用户！');
+        return back();
     }
 }
